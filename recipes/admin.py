@@ -1,3 +1,29 @@
 from django.contrib import admin
+from .models import Recipe, Tag, Ingredient, Purchase
 
-# Register your models here.
+
+class RecipeAdmin(admin.ModelAdmin):
+    list_display = (
+        'title', 'time', 'description', 'author', 'slug', 'pub_date',)
+    search_fields = ('title',)
+    list_filter = ('pub_date',)
+    prepopulated_fields = {'slug': ('title',)}
+
+
+class TagAdmin(admin.ModelAdmin):
+    list_display = ('title', 'id',)
+
+
+class IngredientAdmin(admin.ModelAdmin):
+    list_display = ('title', 'dimension',)
+
+
+class PurchaseAdmin(admin.ModelAdmin):
+    list_display = ('recipe', 'ingredient', 'amount',)
+    list_filter = ('recipe',)
+
+
+admin.site.register(Recipe, RecipeAdmin)
+admin.site.register(Tag, TagAdmin)
+admin.site.register(Ingredient, IngredientAdmin)
+admin.site.register(Purchase, PurchaseAdmin)
