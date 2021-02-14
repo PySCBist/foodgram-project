@@ -43,10 +43,15 @@
                     <label for="cantidad" class="form__label" id="cantidadVal">шт.</label>
                 </div>
                 <div class="form__field-group-ingredientes-container">
-
+                    {% if recipe %}
+                    <span> яблоки 100г</span> <span class="form__field-item-delete"></span>
+                    <input id="nameIngredient_1" name="nameIngredient_1" type="hidden" value="яблоки">
+                    <input id="valueIngredient_1" name="valueIngredient_1" type="hidden" value="100">
+                    <input id="unitsIngredient_1" name="unitsIngredient_1" type="hidden" value="г">
+                    {% endif %}
                 </div>
                 <span class="form__ingredient-link" id="addIng">Добавить ингредиент</span>
-                <span class="form__error"></span>
+                <span class="form__error">{{ form.errors }}</span>
             </div>
         </div>
         <div class="form__group">
@@ -76,4 +81,11 @@
         </div>
     </form>
 </div>
+{% block script %}
+    <script src="{% static  'js/config/config.js' %}"></script>
+    <script src="{% static 'js/components/Header.js'%}"></script>
+    <script src="{% static 'js/utils/debouncing.js'%}"></script>
+    <script src="{% static 'js/api/Api.js'%}"></script>
+    <script src="{% static 'pages/js/formRecipe.js'%}"></script>
+{% endblock %}
 {% endblock %}

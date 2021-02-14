@@ -45,7 +45,8 @@ class Ingredient(models.Model):
     title = models.CharField(max_length=200, verbose_name='Название',
                              db_index=True)
     dimension = models.CharField(max_length=20,
-                                 verbose_name='Единица измерения')
+                                 verbose_name='Единица измерения', blank=True,
+                                 null=True)
 
     def __str__(self):
         return self.title
@@ -53,7 +54,8 @@ class Ingredient(models.Model):
 
 class Purchase(models.Model):
     ingredient = models.ForeignKey(Ingredient, on_delete=models.CASCADE,
-                                   verbose_name='Ингредиент')
+                                   verbose_name='Ингредиент',
+                                   related_name='ingredient')
     recipe = models.ForeignKey(Recipe, on_delete=models.CASCADE,
                                verbose_name='Рецепт')
     amount = models.PositiveSmallIntegerField(verbose_name='Колличество',
@@ -69,3 +71,12 @@ class Follow(models.Model):
 
     class Meta:
         unique_together = ('user', 'author')
+
+
+class Favorite(models.Model):
+    recipe = models.ForeignKey(Recipe, on_delete=models.CASCADE,
+                               verbose_name='Рецепт',
+                               related_name='in_favorites')
+    user = models.ForeignKey(User, on_delete=models.CASCADE,
+                             related_name='has_favorites',
+                             verbose_name='Пользователь')

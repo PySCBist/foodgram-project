@@ -1,5 +1,5 @@
 from django.contrib import admin
-from .models import Recipe, Tag, Ingredient, Purchase
+from .models import Recipe, Tag, Ingredient, Purchase, Favorite, Follow
 
 
 class RecipeAdmin(admin.ModelAdmin):
@@ -11,7 +11,7 @@ class RecipeAdmin(admin.ModelAdmin):
 
 
 class TagAdmin(admin.ModelAdmin):
-    list_display = ('title', 'id',)
+    list_display = ('title', 'colour',)
 
 
 class IngredientAdmin(admin.ModelAdmin):
@@ -23,7 +23,19 @@ class PurchaseAdmin(admin.ModelAdmin):
     list_filter = ('recipe',)
 
 
+class FavoriteAdmin(admin.ModelAdmin):
+    list_display = ('recipe', 'user',)
+    list_filter = ('user',)
+
+
+class FollowAdmin(admin.ModelAdmin):
+    list_display = ('author', 'user',)
+    list_filter = ('user', 'author',)
+
+
 admin.site.register(Recipe, RecipeAdmin)
 admin.site.register(Tag, TagAdmin)
 admin.site.register(Ingredient, IngredientAdmin)
 admin.site.register(Purchase, PurchaseAdmin)
+admin.site.register(Favorite, FavoriteAdmin)
+admin.site.register(Follow, FollowAdmin)

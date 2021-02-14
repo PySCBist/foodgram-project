@@ -16,7 +16,7 @@
         <div class="card__items card__items_column">
             <p class="card__text"><span
                     class="icon-time"></span> {{ recipe.time }} мин.</p>
-            <p class="card__text"><span class="icon-user"></span> <a href="#"
+            <p class="card__text"><span class="icon-user"></span> <a href="{% url 'author_page' recipe.author.username %}"
                                                                      style="color: black"> {{ recipe.author.first_name }} </a>
             </p>
         </div>
@@ -27,8 +27,7 @@
                     data-out><span class="icon-plus button__icon"></span>Добавить
                 в покупки
             </button>
-            <button class="button button_style_none" name="favorites" data-out>
-                <span class="icon-favorite"></span></button>
+            <button class="button button_style_none" name="favorites"{% if recipe in favorite %}><span class="icon-favorite icon-favorite_active"{% else %} data-out><span class="icon-favorite"{% endif %}></span></button>
         </div>
     {% endif %}
 </div>
