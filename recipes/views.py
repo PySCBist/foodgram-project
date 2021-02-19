@@ -8,12 +8,14 @@ from django.shortcuts import render, get_object_or_404, redirect
 from django.urls import reverse, reverse_lazy
 from django.utils.text import slugify
 from django.views.generic import ListView, DetailView, CreateView, \
-    DeleteView, UpdateView
+    DeleteView, UpdateView, TemplateView
 from transliterate import translit
 from recipes.forms import RecipeModelForm
 from recipes.models import Recipe, Follow, User, Favorite, Tag, Content, \
     Purchase
 from django.contrib.auth.mixins import LoginRequiredMixin
+
+from recipes.permissions import IsOwnerResourceOrModerator
 from recipes.utils import adding_ingredients_to_recipe, tags
 
 ALL_TAGS = Tag.objects.all()
@@ -21,7 +23,7 @@ ALL_TAGS = Tag.objects.all()
 
 class RecipeListView(ListView):
     model = Recipe
-    template_name = 'index.html'
+    template_name = 'recipes/index.html'
     paginate_by = 6
 
     @property
@@ -46,10 +48,11 @@ class RecipeListView(ListView):
 
 class RecipeDetailView(DetailView):
     model = Recipe
-    template_name = 'singlePage.html'
+    template_name = 'recipes/detail_recipe.html'
 
     @property
     def extra_context(self):
+        recipe_ingredients = Content.objects.filter(recipe=self.object)
         if self.request.user.is_authenticated:
             follow = Follow.objects.filter(author=self.object.author,
                                            user=self.request.user)
@@ -57,18 +60,19 @@ class RecipeDetailView(DetailView):
                                                user=self.request.user)
             purchase = Purchase.objects.filter(recipe=self.object,
                                                user=self.request.user)
-            recipe_ingredients = Content.objects.filter(recipe=self.object)
-            return {'follow': follow,
-                    'favorite': favorite,
-                    'recipe_ingredients': recipe_ingredients,
-                    'purchase': purchase
-                    }
+        else:
+            follow = purchase = favorite = False
+        return {'follow': follow,
+                'favorite': favorite,
+                'recipe_ingredients': recipe_ingredients,
+                'purchase': purchase
+                }
 
 
 class RecipeCreateView(LoginRequiredMixin, CreateView):
     model = Recipe
     form_class = RecipeModelForm
-    template_name = 'formRecipe.html'
+    template_name = 'recipes/form_recipe.html'
 
     def form_valid(self, form):
         recipe = form.save(commit=False)
@@ -86,10 +90,10 @@ class RecipeCreateView(LoginRequiredMixin, CreateView):
         return reverse('detail_recipe', kwargs={'slug': self.object.slug})
 
 
-class RecipeUpdateView(LoginRequiredMixin, UpdateView):
+class RecipeUpdateView(IsOwnerResourceOrModerator, UpdateView):
     model = Recipe
     form_class = RecipeModelForm
-    template_name = 'formRecipe.html'
+    template_name = 'recipes/form_recipe.html'
 
     @property
     def extra_context(self):
@@ -107,7 +111,7 @@ class RecipeUpdateView(LoginRequiredMixin, UpdateView):
         return super().form_valid(form)
 
 
-class RecipeDeleteView(DeleteView):
+class RecipeDeleteView(IsOwnerResourceOrModerator, DeleteView):
     model = Recipe
     success_url = reverse_lazy('index')
 
@@ -115,7 +119,7 @@ class RecipeDeleteView(DeleteView):
 class FavoriteListView(LoginRequiredMixin, ListView):
     model = Favorite
     paginate_by = 6
-    template_name = 'favorite.html'
+    template_name = 'recipes/favorite.html'
 
     @property
     def extra_context(self):
@@ -137,7 +141,10 @@ class FavoriteListView(LoginRequiredMixin, ListView):
 
 class PurchaseListView(LoginRequiredMixin, ListView):
     model = Purchase
-    template_name = 'shopList.html'
+    template_name = 'recipes/purchases.html'
+
+    def get_queryset(self):
+        return Purchase.objects.filter(user=self.request.user)
 
 
 @login_required()
@@ -146,7 +153,7 @@ def subscriptions_index(request):
     paginator = Paginator(authors_list, 6)
     page_number = request.GET.get('page')
     page = paginator.get_page(page_number)
-    return render(request, 'myFollow.html',
+    return render(request, 'recipes/my_follow.html',
                   {'page': page,
                    'paginator': paginator
                    })
@@ -161,12 +168,12 @@ def profile(request, username):
     page_number = request.GET.get('page')
     page_obj = paginator.get_page(page_number)
     if request.user.is_anonymous:
-        follow, favorite, purchase = False
+        follow = purchase = favorite = False
     else:
         follow = Follow.objects.filter(author=author, user=request.user)
         favorite = Recipe.objects.filter(in_favorites__user=request.user)
         purchase = Recipe.objects.filter(purchases__user=request.user)
-    return render(request, 'authorRecipe.html',
+    return render(request, 'recipes/author_page.html',
                   {'recipe_list': page_obj,
                    'author': author,
                    'paginator': paginator,
@@ -191,7 +198,7 @@ def shopping_list_file(request):
     response = HttpResponse(content_type='text/text')
     response['Content-Disposition'] = 'attachment; filename="shoplist.txt"'
     writer = csv.writer(response)
-    writer.writerow([f'Ваш список покупок:'])
+    writer.writerow(['Ваш список покупок:'])
     writer.writerow([])
     for ingredient in ingredients:
         title = ingredient['title']
@@ -201,6 +208,18 @@ def shopping_list_file(request):
     writer.writerow([])
     writer.writerow(['footgram - продуктовый помощник'])
     return response
+
+
+class AboutProjectPage(TemplateView):
+    template_name = 'recipes/about_project.html'
+
+
+class AboutAuthorPage(TemplateView):
+    template_name = 'recipes/about_author.html'
+
+
+class AboutTechPage(TemplateView):
+    template_name = 'recipes/about_tech.html'
 
 
 def page_not_found(request, exception):

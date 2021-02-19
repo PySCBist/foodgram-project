@@ -1,0 +1,15 @@
+{% extends "recipes/base.html" %}
+{% load static %}
+{% block title %}foodgram | Технологии{% endblock %}
+{% block link %}<link rel="stylesheet" href="{% static 'pages/index.css' %} ">{% endblock %}
+{% block content %}
+    <div class="custom-center-block">
+    <h2 align="center"><i>food</i>gram</h2>
+            <p class="custom-text-block" align="center"><span
+                    style="font-size: medium; ">Разработано на <cite>Django</cite></tt><br></span></p>
+        <div class="custom-button-block">
+            <button class="button button_style_light-blue"> <a href="{% url 'index' %}"> Перейти на главную</a></button>
+        </div>
+    </div>
+
+{% endblock %}

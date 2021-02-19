@@ -10,11 +10,13 @@ class Tag(models.Model):
     title = models.CharField(max_length=50, verbose_name='Приём пищи')
     colour = models.CharField(max_length=20, verbose_name='Цвет тега')
 
-    def __str__(self):
-        return self.title
-
     class Meta:
         unique_together = ('title', 'colour')
+        verbose_name = 'Тег'
+        verbose_name_plural = 'Теги'
+
+    def __str__(self):
+        return self.title
 
 
 class Ingredient(models.Model):
@@ -23,6 +25,10 @@ class Ingredient(models.Model):
     dimension = models.CharField(max_length=20,
                                  verbose_name='Единица измерения', blank=True,
                                  null=True)
+
+    class Meta:
+        verbose_name = 'Ингредиент'
+        verbose_name_plural = 'Ингредиенты'
 
     def __str__(self):
         return self.title
@@ -51,6 +57,8 @@ class Recipe(models.Model):
 
     class Meta:
         ordering = ['-pub_date']
+        verbose_name = 'Рецепт'
+        verbose_name_plural = 'Рецепты'
 
     def __str__(self):
         return self.title
@@ -67,15 +75,21 @@ class Content(models.Model):
                                               validators=[
                                                   validate_positive_number])
 
+    class Meta:
+        verbose_name = 'Состав'
+        verbose_name_plural = 'Состав рецептов'
+
 
 class Follow(models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE,
-                             related_name='follower')
+                             related_name='follower', verbose_name='Подписчик')
     author = models.ForeignKey(User, on_delete=models.CASCADE,
-                               related_name='following')
+                               related_name='following', verbose_name='Автор')
 
     class Meta:
         unique_together = ('user', 'author')
+        verbose_name = 'Подписка'
+        verbose_name_plural = 'Подписки'
 
 
 class Favorite(models.Model):
@@ -85,6 +99,10 @@ class Favorite(models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE,
                              related_name='has_favorites',
                              verbose_name='Пользователь')
+
+    class Meta:
+        verbose_name = 'Избранное'
+        verbose_name_plural = 'Избранное'
 
 
 class Purchase(models.Model):
@@ -97,3 +115,5 @@ class Purchase(models.Model):
 
     class Meta:
         unique_together = ('user', 'recipe')
+        verbose_name = 'Список покупок'
+        verbose_name_plural = 'Списки покупок'

@@ -1,4 +1,4 @@
-{% extends "base.html" %}
+{% extends "recipes/base.html" %}
 {% load static %}
 {% block title %}foodgram | {{ recipe.title }}{% endblock %}
 {% block link %}<link rel="stylesheet" href="{% static 'pages/single.css' %} ">{% endblock %}
@@ -11,7 +11,7 @@
     <div class="single-card__info">
         <div class="single-card__header-info">
             <h1 class="single-card__title">{{ recipe.title }}</h1>
-            {% if user.is_authenticated %}
+            {% if user.is_authenticated and recipe.author != request.user %}
             <div class="single-card__favorite">
                 <button class="button button_style_none" name="favorites"{% if favorite %}><span class="icon-favorite icon-favorite_active"{% else %} data-out><span class="icon-favorite{% endif %} icon-favorite_big"></span></button>
                 <div class="single-card__favorite-tooltip tooltip">Добавить в избранное</div>
@@ -26,8 +26,8 @@
         <div class="single-card__items single-card__items_column">
             <p class="single-card__text"><span class="icon-time"></span> {{ recipe.time }} мин. </p>
             <ul class="single-card__items">
-                <li class="single-card__item"><p class="single-card__text"><span class="icon-user"></span> {{ recipe.author.first_name }}</p></li>
-                {% if user == recipe.author %}
+                <li class="single-card__item"><p class="single-card__text"><span class="icon-user"></span><a href="{% url 'author_page' recipe.author.username %}" style="color: black"> {{ recipe.author.first_name }}</a></p></li>
+                {% if user == recipe.author or request.user.is_superuser %}
                 <li class="single-card__item">  <a style="margin-left: 2.5em" href="{% url 'edit_recipe' slug=recipe.slug %}" class="single-card__text">Редактировать рецепт</a></li>
                 {% endif %}
             </ul>

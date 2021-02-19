@@ -4,11 +4,17 @@ from .models import Recipe, Tag, Ingredient, Favorite, Follow, Content, \
 
 
 class RecipeAdmin(admin.ModelAdmin):
-    list_display = (
-        'title', 'time', 'description', 'author', 'slug', 'pub_date',)
+    list_display = ('title', 'author',)
     search_fields = ('title',)
-    list_filter = ('pub_date',)
+    list_filter = ('title', 'author', 'tag',)
     prepopulated_fields = {'slug': ('title',)}
+    readonly_fields = ('in_favorites',)
+
+    def in_favorites(self, obj):
+        count = Favorite.objects.filter(recipe=obj).count()
+        return count
+
+    in_favorites.short_description = 'Рецепт в избранном'
 
 
 class TagAdmin(admin.ModelAdmin):
@@ -17,11 +23,12 @@ class TagAdmin(admin.ModelAdmin):
 
 class IngredientAdmin(admin.ModelAdmin):
     list_display = ('title', 'dimension',)
+    list_filter = ('title',)
 
 
 class PurchaseAdmin(admin.ModelAdmin):
     list_display = ('recipe', 'user',)
-    list_filter = ('recipe',)
+    list_filter = ('user',)
 
 
 class FavoriteAdmin(admin.ModelAdmin):

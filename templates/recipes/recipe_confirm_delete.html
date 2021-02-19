@@ -1,11 +1,10 @@
-{% extends "base.html" %}
+{% extends "recipes/base.html" %}
 {% load static %}
 {% block title %}foodgram | Удаление рецепта{% endblock %}
 {% block link %}<link rel="stylesheet" href="{% static 'pages/index.css' %}">{% endblock %}
 {% block content %}
     <div class="custom-center-block">
-            <p class="custom-text-block">Вы действительно хотите удалить рецепт</p>
-            <p class="custom-text-block"><strong> {{  recipe.title }}</strong>?</p>
+        <p class="custom-text-block"><h2 align="center">Вы действительно хотите удалить рецепт<br>"{{  recipe.title }}"?</h2></p>
         <form class="form" method="post" enctype="multipart/form-data">
             {% csrf_token %}
         <div class="custom-button-block">

@@ -1,3 +1,5 @@
+from rest_framework.permissions import IsAuthenticated
+
 from api.utils import AddRemoveMixin
 from rest_framework.response import Response
 from rest_framework.views import APIView
@@ -21,6 +23,8 @@ class IngredientsList(generics.ListAPIView):
 
 
 class FollowView(APIView):
+    permission_classes = [IsAuthenticated]
+
     def post(self, request):
         author_id = request.data['id']
         author = User.objects.get(pk=author_id)
@@ -41,8 +45,10 @@ class FollowView(APIView):
 class FavoriteView(AddRemoveMixin, APIView):
     model = Favorite
     serializer_choice = FavoriteSerializer
+    permission_classes = [IsAuthenticated]
 
 
 class PurchaseView(AddRemoveMixin, APIView):
     model = Purchase
     serializer_choice = PurchaseSerializer
+    permission_classes = [IsAuthenticated]

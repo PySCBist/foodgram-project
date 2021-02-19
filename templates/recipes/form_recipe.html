@@ -1,4 +1,4 @@
-{% extends "base.html" %}
+{% extends "recipes/base.html" %}
 {% load static %}
 {% block title %}foodgram | {% if recipe %}Редактирование{% else %}Создание{% endif %} рецепта{% endblock %}
 {% block link %}<link rel="stylesheet" href="{% static 'pages/form.css' %} ">{% endblock %}
@@ -99,9 +99,9 @@
 </div>
 {% block script %}
     <script src="{% static  'js/config/config.js' %}"></script>
-    <script src="{% static 'js/components/Header.js'%}"></script>
-    <script src="{% static 'js/utils/debouncing.js'%}"></script>
-    <script src="{% static 'js/api/Api.js'%}"></script>
-    <script src="{% static 'pages/js/formRecipe.js'%}"></script>
+    <script src="{% static 'js/components/Header.js' %}"></script>
+    <script src="{% static 'js/utils/debouncing.js' %}"></script>
+    <script src="{% static 'js/api/Api.js' %}"></script>
+    <script src="{% static 'pages/js/formRecipe.js' %}"></script>
 {% endblock %}
 {% endblock %}
