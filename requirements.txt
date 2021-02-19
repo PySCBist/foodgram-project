@@ -1,0 +1,14 @@
+click==7.1.2
+Django==2.2.6
+djangorestframework==3.12.2
+Pillow==8.1.0
+psycopg2==2.8.6
+psycopg2-binary==2.8.5
+pyenchant==3.2.0
+python-dotenv==0.10.5
+pytz==2020.5
+six==1.15.0
+sorl-thumbnail==12.7.0
+sqlparse==0.4.1
+svgwrite==1.4.1
+transliterate==1.10.2

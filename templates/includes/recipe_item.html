@@ -23,10 +23,7 @@
     </div>
     {% if user.is_authenticated %}
         <div class="card__footer">
-            <button class="button button_style_light-blue" name="purchases"
-                    data-out><span class="icon-plus button__icon"></span>Добавить
-                в покупки
-            </button>
+            <button class="button button_style{% if recipe in purchase %}_light-blue-outline" name="purchases"><span class="icon-check button__icon"></span> Рецепт добавлен{% else %}_light-blue" name="purchases" data-out><span class="icon-plus"></span> Добавить в покупки{% endif %}</button>
             <button class="button button_style_none" name="favorites"{% if recipe in favorite %}><span class="icon-favorite icon-favorite_active"{% else %} data-out><span class="icon-favorite"{% endif %}></span></button>
         </div>
     {% endif %}

@@ -17,15 +17,30 @@ class Tag(models.Model):
         unique_together = ('title', 'colour')
 
 
+class Ingredient(models.Model):
+    title = models.CharField(max_length=200, verbose_name='Название',
+                             db_index=True)
+    dimension = models.CharField(max_length=20,
+                                 verbose_name='Единица измерения', blank=True,
+                                 null=True)
+
+    def __str__(self):
+        return self.title
+
+
 class Recipe(models.Model):
-    title = models.CharField(max_length=200, verbose_name='Название')
+    title = models.CharField(max_length=200, verbose_name='Название',
+                             blank=False)
     slug = models.SlugField(unique=True, verbose_name='URL')
     tag = models.ManyToManyField(Tag, verbose_name='Тег',
                                  related_name='recipes')
+    ingredients = models.ManyToManyField(Ingredient, through='Content',
+                                         verbose_name='Ингредиенты',
+                                         related_name='recipe_ingredient')
     time = models.PositiveSmallIntegerField(verbose_name='Время приготовления',
                                             validators=[
                                                 validate_positive_number])
-    description = models.TextField(blank=True, null=True,
+    description = models.TextField(blank=False,
                                    verbose_name='Описание')
     image = models.ImageField(upload_to='foodgram/', blank=True, null=True,
                               verbose_name='Загрузка изображения')
@@ -41,23 +56,13 @@ class Recipe(models.Model):
         return self.title
 
 
-class Ingredient(models.Model):
-    title = models.CharField(max_length=200, verbose_name='Название',
-                             db_index=True)
-    dimension = models.CharField(max_length=20,
-                                 verbose_name='Единица измерения', blank=True,
-                                 null=True)
-
-    def __str__(self):
-        return self.title
-
-
-class Purchase(models.Model):
+class Content(models.Model):
     ingredient = models.ForeignKey(Ingredient, on_delete=models.CASCADE,
                                    verbose_name='Ингредиент',
                                    related_name='ingredient')
     recipe = models.ForeignKey(Recipe, on_delete=models.CASCADE,
-                               verbose_name='Рецепт')
+                               verbose_name='Рецепт',
+                               related_name='content_recipe')
     amount = models.PositiveSmallIntegerField(verbose_name='Колличество',
                                               validators=[
                                                   validate_positive_number])
@@ -80,3 +85,15 @@ class Favorite(models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE,
                              related_name='has_favorites',
                              verbose_name='Пользователь')
+
+
+class Purchase(models.Model):
+    user = models.ForeignKey(User, on_delete=models.CASCADE,
+                             related_name='purchases',
+                             verbose_name='Пользователь')
+    recipe = models.ForeignKey(Recipe, on_delete=models.CASCADE,
+                               related_name='purchases',
+                               verbose_name='Рецепт')
+
+    class Meta:
+        unique_together = ('user', 'recipe')

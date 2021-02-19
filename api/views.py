@@ -1,13 +1,13 @@
-from django.shortcuts import render, redirect
+from api.utils import AddRemoveMixin
 from rest_framework.response import Response
 from rest_framework.views import APIView
 
-from recipes.models import Ingredient, Follow, Recipe, Favorite
+from recipes.models import Ingredient, Follow, Favorite, Purchase
 from rest_framework import generics, status
 
 from users.forms import User
 from .serializers import IngredientSerializer, FollowSerializer, \
-    FavoriteSerializer
+    FavoriteSerializer, PurchaseSerializer
 
 
 class IngredientsList(generics.ListAPIView):
@@ -38,18 +38,11 @@ class FollowView(APIView):
         return Response(data={"success": "true"}, status=status.HTTP_200_OK)
 
 
-class FavoriteView(APIView):
-    def post(self, request):
-        recipe_id = request.data['id']
-        serializer = FavoriteSerializer(
-            data={"recipe": recipe_id, "user": self.request.user})
-        if not serializer.is_valid():
-            return Response(data=serializer.errors,
-                            status=status.HTTP_400_BAD_REQUEST)
-        serializer.save()
-        return Response(data={"success": "true"}, status=status.HTTP_200_OK)
+class FavoriteView(AddRemoveMixin, APIView):
+    model = Favorite
+    serializer_choice = FavoriteSerializer
 
-    def delete(self, request, recipe_id):
-        Favorite.objects.filter(recipe=recipe_id,
-                                user=request.user.id).delete()
-        return Response(data={"success": "true"}, status=status.HTTP_200_OK)
+
+class PurchaseView(AddRemoveMixin, APIView):
+    model = Purchase
+    serializer_choice = PurchaseSerializer

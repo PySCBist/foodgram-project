@@ -15,6 +15,8 @@ def addtag(request, tag):
         updated_request.pop(tag)
     else:
         updated_request[tag] = False
+        if updated_request.get('page'):
+            updated_request['page'] = 1
     return updated_request.urlencode()
 
 

@@ -1,6 +1,6 @@
 from rest_framework import serializers
 
-from recipes.models import Ingredient, Follow, User, Recipe, Favorite
+from recipes.models import Ingredient, Follow, User, Recipe, Favorite, Purchase
 
 
 class IngredientSerializer(serializers.ModelSerializer):
@@ -33,3 +33,13 @@ class FavoriteSerializer(serializers.ModelSerializer):
     class Meta:
         fields = ('recipe', 'user')
         model = Favorite
+
+
+class PurchaseSerializer(serializers.ModelSerializer):
+    recipe = serializers.PrimaryKeyRelatedField(queryset=Recipe.objects.all())
+    user = serializers.SlugRelatedField(slug_field='username',
+                                        queryset=User.objects.all())
+
+    class Meta:
+        fields = ('recipe', 'user')
+        model = Purchase
