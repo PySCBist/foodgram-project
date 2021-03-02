@@ -1,7 +1,7 @@
-from django.db import transaction, IntegrityError
+from django.db import IntegrityError, transaction
 from django.http import HttpResponseBadRequest
 
-from recipes.models import Ingredient, Content, Tag
+from recipes.models import Content, Ingredient
 
 
 def adding_ingredients_to_recipe(recipe, form):
@@ -21,12 +21,3 @@ def adding_ingredients_to_recipe(recipe, form):
 
     except IntegrityError:
         return HttpResponseBadRequest
-
-
-def tags(request):
-    all_tags = Tag.objects.all()
-    user_removed_tags = list(request.GET)
-    user_removed_tags_queryset = Tag.objects.filter(
-        title__in=user_removed_tags)
-    tag_for_context = list(set(all_tags) - set(user_removed_tags_queryset))
-    return tag_for_context

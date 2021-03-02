@@ -1,17 +1,18 @@
 from django.contrib import admin
-from .models import Recipe, Tag, Ingredient, Favorite, Follow, Content, \
-    Purchase
+
+from .models import (Content, Favorite, Follow, Ingredient, Purchase, Recipe,
+                     Tag)
 
 
 class RecipeAdmin(admin.ModelAdmin):
     list_display = ('title', 'author',)
     search_fields = ('title',)
-    list_filter = ('title', 'author', 'tag',)
+    list_filter = ('title', 'author', 'tags',)
     prepopulated_fields = {'slug': ('title',)}
     readonly_fields = ('in_favorites',)
 
     def in_favorites(self, obj):
-        count = Favorite.objects.filter(recipe=obj).count()
+        count = obj.in_favorites.count()
         return count
 
     in_favorites.short_description = 'Рецепт в избранном'

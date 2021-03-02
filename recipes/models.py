@@ -1,7 +1,7 @@
 from django.contrib.auth import get_user_model
 from django.db import models
-
-from recipes.validators import validate_positive_number
+from django.utils.text import slugify
+from transliterate import translit
 
 User = get_user_model()
 
@@ -11,9 +11,10 @@ class Tag(models.Model):
     colour = models.CharField(max_length=20, verbose_name='Цвет тега')
 
     class Meta:
-        unique_together = ('title', 'colour')
         verbose_name = 'Тег'
         verbose_name_plural = 'Теги'
+        constraints = [models.UniqueConstraint(fields=['title', 'colour'],
+                                               name='unique_tag')]
 
     def __str__(self):
         return self.title
@@ -38,14 +39,12 @@ class Recipe(models.Model):
     title = models.CharField(max_length=200, verbose_name='Название',
                              blank=False)
     slug = models.SlugField(unique=True, verbose_name='URL')
-    tag = models.ManyToManyField(Tag, verbose_name='Тег',
-                                 related_name='recipes')
+    tags = models.ManyToManyField(Tag, verbose_name='Тег',
+                                  related_name='recipes')
     ingredients = models.ManyToManyField(Ingredient, through='Content',
                                          verbose_name='Ингредиенты',
-                                         related_name='recipe_ingredient')
-    time = models.PositiveSmallIntegerField(verbose_name='Время приготовления',
-                                            validators=[
-                                                validate_positive_number])
+                                         related_name='recipes')
+    time = models.PositiveSmallIntegerField(verbose_name='Время приготовления')
     description = models.TextField(blank=False,
                                    verbose_name='Описание')
     image = models.ImageField(upload_to='foodgram/', blank=True, null=True,
@@ -63,6 +62,17 @@ class Recipe(models.Model):
     def __str__(self):
         return self.title
 
+    def save(self, *args, **kwargs):
+        super(Recipe, self).save(*args, **kwargs)
+        if not self.slug:
+            slug = slugify(
+                translit(self.title, language_code='ru', reversed=True))
+            if Recipe.objects.filter(slug=slug).exists():
+                self.slug = "%s-%s" % (slug, self.id)
+            else:
+                self.slug = slug
+            self.save()
+
 
 class Content(models.Model):
     ingredient = models.ForeignKey(Ingredient, on_delete=models.CASCADE,
@@ -71,9 +81,7 @@ class Content(models.Model):
     recipe = models.ForeignKey(Recipe, on_delete=models.CASCADE,
                                verbose_name='Рецепт',
                                related_name='content_recipe')
-    amount = models.PositiveSmallIntegerField(verbose_name='Колличество',
-                                              validators=[
-                                                  validate_positive_number])
+    amount = models.PositiveSmallIntegerField(verbose_name='Колличество')
 
     class Meta:
         verbose_name = 'Состав'
@@ -87,9 +95,10 @@ class Follow(models.Model):
                                related_name='following', verbose_name='Автор')
 
     class Meta:
-        unique_together = ('user', 'author')
         verbose_name = 'Подписка'
         verbose_name_plural = 'Подписки'
+        constraints = [models.UniqueConstraint(fields=['user', 'author'],
+                                               name='unique_follow')]
 
 
 class Favorite(models.Model):
@@ -114,6 +123,7 @@ class Purchase(models.Model):
                                verbose_name='Рецепт')
 
     class Meta:
-        unique_together = ('user', 'recipe')
         verbose_name = 'Список покупок'
         verbose_name_plural = 'Списки покупок'
+        constraints = [models.UniqueConstraint(fields=['user', 'recipe'],
+                                               name='unique_purchase')]

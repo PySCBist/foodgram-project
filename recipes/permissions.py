@@ -10,6 +10,4 @@ class IsOwnerResourceOrModerator(permissions.BasePermission):
         obj = self.get_object()
         if obj.author == request.user or request.user.is_superuser:
             return super().dispatch(request, *args, **kwargs)
-        return HttpResponseForbidden(
-            "<H1>Вы не можете редактировать или удалить этот рецепт,"
-            " т.к. не являетесь его автором.<H1>")
+        return HttpResponseForbidden()

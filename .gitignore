@@ -135,3 +135,4 @@ media/
 sent_emails
 /ingredients/
 backup_html
+staticfiles

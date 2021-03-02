@@ -1,16 +1,17 @@
 from django import forms
 from django.core.exceptions import ValidationError
-from recipes.models import Recipe, Ingredient
+
+from recipes.models import Ingredient, Recipe
 
 
 class RecipeModelForm(forms.ModelForm):
     class Meta:
         model = Recipe
-        fields = ['title', 'tag', 'time', 'description',
+        fields = ['title', 'tags', 'time', 'description',
                   'image']
 
         help_texts = {'time': 'укажите время в минутах'}
-        widgets = {'tag': forms.CheckboxSelectMultiple()}
+        widgets = {'tags': forms.CheckboxSelectMultiple()}
 
     def clean(self):
         data = super().clean()

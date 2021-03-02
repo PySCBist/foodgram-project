@@ -24,20 +24,20 @@
                 {% if recipe %}
                     {% for tag in all_tags %}
                         <div class="tags__item">
-                            <input type="checkbox" name="tag" id="id_{{ tag.title }}" class="tags__checkbox tags__checkbox_style_{{ tag.colour }}" value="{{ tag.pk }}" {% if tag in recipe.tag.all %}checked{% endif %}>
+                            <input type="checkbox" name="tags" id="id_{{ tag.title }}" class="tags__checkbox tags__checkbox_style_{{ tag.colour }}" value="{{ tag.pk }}" {% if tag in recipe.tags.all %}checked{% endif %}>
                             <label for="id_{{ tag.title }}" class="tags__label">{{ tag.title }}</label>
                        </div>
                     {% endfor %}
                 {% else %}
-                    {% for tag in form.fields.tag.choices.queryset %}
+                    {% for tag in form.fields.tags.choices.queryset %}
                         <div class="tags__item">
-                            <input type="checkbox" name="tag" id="id_tag_{{ tag.pk }}" class="tags__checkbox tags__checkbox_style_{{ tag.colour }}" value="{{ tag.pk }}">
-                            <label for="id_tag_{{ tag.pk }}" class="tags__label">{{ tag.title }}</label>
+                            <input type="checkbox" name="tags" id="id_{{ tag.title }}" class="tags__checkbox tags__checkbox_style_{{ tag.colour }}" value="{{ tag.pk }}">
+                            <label for="id_{{ tag.title }}" class="tags__label">{{ tag.title }}</label>
                        </div>
                     {% endfor %}
                 {% endif %}
                 </div>
-                <span class="form__error">{{ form.tag.errors }}</span>
+                <span class="form__error">{{ form.tags.errors }}</span>
             </div>
         </div>
         <div class="form__group">

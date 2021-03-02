@@ -9,8 +9,8 @@
         <a class="card__title link"
            href="{% url 'detail_recipe' recipe.slug %}">{{ recipe.title }}</a>
         <ul class="card__items">
-            {% for tag in recipe.tag.all %}
-            <li class="card__item"><span class="badge badge_style_{{ tag.colour }}">{{ tag.title|title }}</span></li>
+            {% for tags in recipe.tags.all %}
+            <li class="card__item"><span class="badge badge_style_{{ tags.colour }}">{{ tags.title|title }}</span></li>
             {% endfor %}
         </ul>
         <div class="card__items card__items_column">

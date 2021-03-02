@@ -1,15 +1,15 @@
+from rest_framework import generics, status
+from rest_framework.generics import get_object_or_404
 from rest_framework.permissions import IsAuthenticated
-
-from api.utils import AddRemoveMixin
 from rest_framework.response import Response
 from rest_framework.views import APIView
 
-from recipes.models import Ingredient, Follow, Favorite, Purchase
-from rest_framework import generics, status
-
+from api.utils import AddRemoveMixin
+from recipes.models import Favorite, Follow, Ingredient, Purchase
 from users.forms import User
-from .serializers import IngredientSerializer, FollowSerializer, \
-    FavoriteSerializer, PurchaseSerializer
+
+from .serializers import (FavoriteSerializer, FollowSerializer,
+                          IngredientSerializer, PurchaseSerializer)
 
 
 class IngredientsList(generics.ListAPIView):
@@ -26,8 +26,12 @@ class FollowView(APIView):
     permission_classes = [IsAuthenticated]
 
     def post(self, request):
-        author_id = request.data['id']
-        author = User.objects.get(pk=author_id)
+        try:
+            author_id = request.data['id']
+        except KeyError:
+            return Response(data='В запросе отсутствует id автора',
+                            status=status.HTTP_400_BAD_REQUEST)
+        author = get_object_or_404(User, pk=author_id)
         context = {"request": request}
         serializer = FollowSerializer(data={"author": author},
                                       context=context)
@@ -38,7 +42,8 @@ class FollowView(APIView):
         return Response(data={"success": "true"}, status=status.HTTP_200_OK)
 
     def delete(self, request, author_id):
-        Follow.objects.filter(author=author_id, user=request.user.id).delete()
+        author = get_object_or_404(User, pk=author_id)
+        Follow.objects.filter(author=author, user=request.user.id).delete()
         return Response(data={"success": "true"}, status=status.HTTP_200_OK)
 
 
