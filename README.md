@@ -1,6 +1,6 @@
 # foodgram-project
 
-![Workflow Status](https://github.com/PySCBist/foodgram-project/workflows/foodgram_workflow/badge.svg)
+![Workflow Status](https://github.com/PySCBist/foodgram-project/workflows/foodgram%20workflow/badge.svg)
 
 ***Foodgram*** - это сайт рецептов. Продуктовый помощник, позволяющий просматривать и создавать рецепты, добавлять их в
 избранное, подписываться на авторов рецептов, формировать список покупок с ингредиентами для приготовления понравившихся
