@@ -17,8 +17,6 @@ from recipes.models import (Content, Favorite, Follow, Purchase, Recipe, Tag,
 from recipes.permissions import IsOwnerResourceOrModerator
 from recipes.utils import adding_ingredients_to_recipe
 
-ALL_TAGS = Tag.objects.all()
-
 
 class RecipeListView(ListView):
     model = Recipe
@@ -29,7 +27,7 @@ class RecipeListView(ListView):
         context = super().get_context_data(object_list=object_list, **kwargs)
         context['active_tags'] = list(
             Tag.objects.exclude(title__in=list(self.request.GET)))
-        context['all_tags'] = ALL_TAGS
+        context['all_tags'] = Tag.objects.all()
         if self.request.user.is_authenticated:
             context['favorite'] = Recipe.objects.filter(
                 in_favorites__user=self.request.user)
@@ -90,7 +88,7 @@ class RecipeUpdateView(IsOwnerResourceOrModerator, UpdateView):
         context = super().get_context_data(**kwargs)
         context['recipe_ingredients'] = Content.objects.filter(
             recipe=self.object)
-        context['all_tags'] = ALL_TAGS
+        context['all_tags'] = Tag.objects.all()
         return context
 
     def get_success_url(self):
@@ -121,7 +119,7 @@ class FavoriteListView(LoginRequiredMixin, ListView):
             purchases__user=self.request.user)
         context['active_tags'] = list(
             Tag.objects.exclude(title__in=list(self.request.GET)))
-        context['all_tags'] = ALL_TAGS
+        context['all_tags'] = Tag.objects.all()
         return context
 
     def get_queryset(self):
@@ -173,7 +171,7 @@ def profile(request, username):
                    'follow': follow,
                    'favorite': favorite,
                    'active_tags': active_tags,
-                   'all_tags': ALL_TAGS,
+                   'all_tags': Tag.objects.all(),
                    'purchase': purchase
                    })
 

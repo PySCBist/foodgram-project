@@ -136,3 +136,5 @@ sent_emails
 /ingredients/
 backup_html
 staticfiles
+.dockerignore
+ingredients.json
