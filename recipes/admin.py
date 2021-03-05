@@ -25,6 +25,7 @@ class TagAdmin(admin.ModelAdmin):
 class IngredientAdmin(admin.ModelAdmin):
     list_display = ('title', 'dimension',)
     list_filter = ('title',)
+    search_fields = ('title',)
 
 
 class PurchaseAdmin(admin.ModelAdmin):
