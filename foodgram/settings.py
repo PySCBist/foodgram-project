@@ -19,6 +19,7 @@ INSTALLED_APPS = [
     'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',
+    'django.contrib.sites',
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
@@ -136,3 +137,5 @@ REST_FRAMEWORK = {
 }
 
 PAGINATION_PAGE_SIZE = 6
+
+SITE_ID = 1
