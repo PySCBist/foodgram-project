@@ -1,3 +1,5 @@
+APScheduler==3.6.3
+certifi==2020.12.5
 click==7.1.2
 Django==2.2.13
 djangorestframework==3.12.2
@@ -8,9 +10,12 @@ psycopg2==2.8.6
 psycopg2-binary==2.8.5
 pyenchant==3.2.0
 python-dotenv==0.10.5
+python-telegram-bot==13.3
 pytz==2020.5
 six==1.15.0
 sorl-thumbnail==12.7.0
 sqlparse==0.4.1
 svgwrite==1.4.1
+tornado==6.1
 transliterate==1.10.2
+tzlocal==2.1

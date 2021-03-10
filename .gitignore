@@ -136,3 +136,4 @@ sent_emails
 backup_html
 staticfiles
 .dockerignore
+logs
