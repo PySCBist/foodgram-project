@@ -28,7 +28,6 @@ INSTALLED_APPS = [
     'rest_framework.authtoken',
 ]
 
-
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
@@ -61,7 +60,6 @@ TEMPLATES = [
 
 WSGI_APPLICATION = 'foodgram.wsgi.application'
 
-
 DATABASES = {
     'default': {
         'ENGINE': os.environ['DB_ENGINE'],
@@ -72,7 +70,6 @@ DATABASES = {
         'PORT': os.environ['DB_PORT'],
     }
 }
-
 
 AUTH_PASSWORD_VALIDATORS = [
     {
@@ -91,7 +88,7 @@ AUTH_PASSWORD_VALIDATORS = [
 
 LANGUAGE_CODE = 'ru'
 
-TIME_ZONE = 'UTC'
+TIME_ZONE = 'Europe/Moscow'
 
 USE_I18N = True
 
@@ -123,7 +120,7 @@ EMAIL_FILE_PATH = os.path.join(BASE_DIR, "sent_emails")
 
 REST_FRAMEWORK = {
     'DEFAULT_PERMISSION_CLASSES': [
-       'rest_framework.permissions.IsAuthenticated',
+        'rest_framework.permissions.IsAuthenticated',
     ],
 
     'DEFAULT_AUTHENTICATION_CLASSES': [
@@ -166,11 +163,18 @@ LOGGING = {
             'class': 'django.utils.log.AdminEmailHandler',
             'include_html': True,
         },
+        'telegram': {
+            'class': 'foodgram.handlers.TelegramBotHandler',
+            'level': 'ERROR',
+            'formatter': 'verbose',
+            'token': os.environ['TELEGRAM_TOKEN'],
+            'chat_id': os.environ['CHAT_ID'],
+        },
     },
     'loggers': {
         'django': {
-            'handlers': ['console', 'file'],
-            'level': DEBUG,
+            'handlers': ['console', 'file', 'telegram'],
+            'level': 'WARNING',
         },
     },
 }

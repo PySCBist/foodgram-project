@@ -15,7 +15,7 @@ from recipes.forms import RecipeModelForm
 from recipes.models import (Content, Favorite, Follow, Purchase, Recipe, Tag,
                             User)
 from recipes.permissions import IsOwnerResourceOrModerator
-from recipes.utils import adding_ingredients_to_recipe, send_message
+from recipes.utils import adding_ingredients_to_recipe
 
 
 class RecipeListView(ListView):
@@ -36,7 +36,6 @@ class RecipeListView(ListView):
         return context
 
     def get_queryset(self):
-        send_message(self.request)
         active_tags = list(
             Tag.objects.exclude(title__in=list(self.request.GET)))
         return Recipe.objects.filter(tags__title__in=active_tags).order_by(
