@@ -197,7 +197,7 @@ def shopping_list_file(request):
         dimension = ingredient['dimension']
         writer.writerow([f' • {title} ({dimension}) - {amount}'])
     writer.writerow([])
-    writer.writerow(['footgram - продуктовый помощник'])
+    writer.writerow(['foodgram - продуктовый помощник'])
     return response
 
 
