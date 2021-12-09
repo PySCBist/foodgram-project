@@ -50,4 +50,5 @@
    `python manage.py loaddata tags.json`
 
 
+Готово!
 :)
