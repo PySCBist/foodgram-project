@@ -49,4 +49,6 @@
    `python manage.py loaddata ingredients.json`
    `python manage.py loaddata tags.json`
 
+
 Готово!
+:)
